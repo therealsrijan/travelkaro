@@ -6,7 +6,6 @@ import { useParams, notFound } from 'next/navigation';
 import { useTrips, Booking, Trip, Member, TripPicture } from '@/contexts/trips-context';
 import { useAuth } from '@/hooks/use-auth';
 import { storage } from '@/lib/firebase';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { Button } from '@/components/ui/button';
 import { MapPin, Users, Edit, Calendar, IndianRupee, Upload, FileText, X, BedDouble, Plane, Train, Car, Pencil, MessageSquare, UserPlus, Trash2, Image as ImageIcon } from 'lucide-react';
 import Image from 'next/image';
@@ -44,7 +43,7 @@ export default function TripDashboardPage() {
     const { user } = useAuth();
     const { toast } = useToast();
     const tripId = params.tripId ? decodeURIComponent(params.tripId as string) : undefined;
-    const { trips, updateTrip, updateTripNotes, addMember, updateMember, removeMember, addPicturesToTrip } = useTrips();
+    const { trips, updateTrip, updateTripNotes, addMember, updateMember, removeMember, addPicturesToTrip, removePicture } = useTrips();
     
     const trip = useMemo(() => trips.find(t => t.id === tripId), [trips, tripId]);
 
@@ -220,13 +219,13 @@ export default function TripDashboardPage() {
         try {
             for (let i = 0; i < totalFiles; i++) {
                 const file = files[i];
-                const storageRef = ref(storage, `trips/${tripId}/pictures/${file.name}`);
-                await uploadBytes(storageRef, file);
-                const downloadURL = await getDownloadURL(storageRef);
-
+                
+                // Mock upload for development
+                const mockUrl = URL.createObjectURL(file);
+                
                 uploadedPictures.push({
                     id: `${Date.now()}-${i}`,
-                    url: downloadURL,
+                    url: mockUrl,
                     uploadedBy: user.email,
                     name: file.name,
                 });
@@ -237,7 +236,7 @@ export default function TripDashboardPage() {
 
             toast({
                 title: 'Upload Complete',
-                description: `${totalFiles} picture(s) added to the trip.`,
+                description: `${totalFiles} picture(s) added to the trip (mock mode).`,
             });
         } catch (error) {
             console.error('Error uploading pictures: ', error);
@@ -272,7 +271,7 @@ export default function TripDashboardPage() {
     );
 
     return (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 h-screen">
             <div className="flex items-center justify-between">
                 <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-3">
@@ -308,11 +307,11 @@ export default function TripDashboardPage() {
                 </div>
             </div>
 
-             <Tabs defaultValue="itinerary" className="w-full">
+             <Tabs defaultValue="itinerary" className="w-full flex-1 flex flex-col">
                 <div className="flex items-center justify-between border-b">
                     <TabsList className="bg-transparent p-0">
                         <TabsTrigger value="itinerary" className="rounded-none">Itinerary</TabsTrigger>
-                        <TabsTrigger value="chat" className="rounded-none">Chat</TabsTrigger>
+                        {/* <TabsTrigger value="chat" className="rounded-none">Chat</TabsTrigger> */}
                         <TabsTrigger value="bookings" className="rounded-none">Bookings</TabsTrigger>
                         <TabsTrigger value="splits" className="rounded-none">Splits</TabsTrigger>
                         <TabsTrigger value="pictures" className="rounded-none">Pictures</TabsTrigger>
@@ -320,14 +319,14 @@ export default function TripDashboardPage() {
                     </TabsList>
                 </div>
 
-                <TabsContent value="itinerary" className="mt-4">
+                <TabsContent value="itinerary" className="mt-4 flex-1">
                      <ItineraryChatbot tripContext={trip} />
                 </TabsContent>
-                <TabsContent value="chat" className="mt-4">
+                {/* <TabsContent value="chat" className="mt-4">
                      <div className="text-center text-muted-foreground py-12 border-2 border-dashed border-muted rounded-lg">
                         <p>Chat feature coming soon!</p>
                    </div>
-                </TabsContent>
+                </TabsContent> */}
                 <TabsContent value="bookings" className="mt-4 space-y-6">
                     {(!trip.bookings || trip.bookings.length === 0) ? (
                         <BookingUploadArea />
@@ -457,6 +456,14 @@ export default function TripDashboardPage() {
                                             <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2">
                                                 <p className="text-white text-xs truncate">{pic.name}</p>
                                             </div>
+                                            <Button
+                                                variant="destructive"
+                                                size="icon"
+                                                className="absolute top-2 right-2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                onClick={() => removePicture(trip.id, pic.id)}
+                                            >
+                                                <X className="h-4 w-4" />
+                                            </Button>
                                         </div>
                                     ))}
                                 </div>

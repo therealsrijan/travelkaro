@@ -9,7 +9,7 @@
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import {z} from 'zod';
 
 const SummarizeTravelReviewsInputSchema = z.object({
   placeName: z.string().describe('The name of the place (hotel, attraction, or restaurant).'),
@@ -23,7 +23,14 @@ const SummarizeTravelReviewsOutputSchema = z.object({
 export type SummarizeTravelReviewsOutput = z.infer<typeof SummarizeTravelReviewsOutputSchema>;
 
 export async function summarizeTravelReviews(input: SummarizeTravelReviewsInput): Promise<SummarizeTravelReviewsOutput> {
-  return summarizeTravelReviewsFlow(input);
+  // Mock response for development
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        summary: `# Review Summary for ${input.placeName}\n\n**Overall Rating:** ⭐⭐⭐⭐⭐ (Based on mock analysis)\n\n**Key Highlights:**\n- Excellent service and hospitality\n- Great location and accessibility\n- Good value for money\n- Clean and comfortable facilities\n\n**Common Feedback:**\n- Positive: Friendly staff, clean rooms, good amenities\n- Areas for improvement: Some mentioned slow service during peak hours\n\n**Recommendation:** Highly recommended for travelers looking for quality accommodation in this area.\n\n*This is a mock review summary for development purposes.*`
+      });
+    }, 1000);
+  });
 }
 
 const prompt = ai.definePrompt({

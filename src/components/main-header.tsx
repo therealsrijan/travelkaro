@@ -1,7 +1,6 @@
 'use client';
 
-import { signOut } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { auth, mockSignOut } from '@/lib/firebase';
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
@@ -23,10 +22,12 @@ export function MainHeader() {
 
   const handleSignOut = async () => {
     try {
-      await signOut(auth);
+      // Mock sign out for development
+      console.log('Mock sign out');
+      mockSignOut();
       toast({
         title: 'Logged Out',
-        description: 'You have been successfully logged out.',
+        description: 'You have been successfully logged out (mock mode).',
       });
     } catch (error) {
       toast({

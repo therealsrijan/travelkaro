@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { useTrips } from '@/contexts/trips-context';
 import { Card, CardContent } from '@/components/ui/card';
@@ -8,9 +8,11 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { PlaneTakeoff, Calendar, Users, MapPin } from 'lucide-react';
 import { format } from 'date-fns';
+import { CreateTripDialog } from '@/components/create-trip-dialog';
 
 export default function MyTripsPage() {
   const { trips } = useTrips();
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
   return (
     <div className="flex flex-col">
@@ -23,8 +25,8 @@ export default function MyTripsPage() {
             <PlaneTakeoff className="h-16 w-16 text-muted-foreground mb-4" />
             <h2 className="text-2xl font-semibold">No Trips Yet</h2>
             <p className="text-muted-foreground mt-2 mb-4">You haven't created any trips. Let's plan your next adventure!</p>
-            <Button asChild>
-                <Link href="/home">Create a New Trip</Link>
+            <Button onClick={() => setIsCreateDialogOpen(true)}>
+                Create a New Trip
             </Button>
         </div>
       ) : (
@@ -71,6 +73,11 @@ export default function MyTripsPage() {
           ))}
         </div>
       )}
+      
+      <CreateTripDialog 
+        open={isCreateDialogOpen} 
+        onOpenChange={setIsCreateDialogOpen} 
+      />
     </div>
   );
 }

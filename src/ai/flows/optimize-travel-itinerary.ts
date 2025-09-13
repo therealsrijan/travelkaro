@@ -8,7 +8,7 @@
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import {z} from 'zod';
 
 const OptimizeTravelItineraryInputSchema = z.object({
   originalItinerary: z.string().describe('The original travel itinerary to optimize.'),
@@ -22,7 +22,14 @@ const OptimizeTravelItineraryOutputSchema = z.object({
 export type OptimizeTravelItineraryOutput = z.infer<typeof OptimizeTravelItineraryOutputSchema>;
 
 export async function optimizeTravelItinerary(input: OptimizeTravelItineraryInput): Promise<OptimizeTravelItineraryOutput> {
-  return optimizeTravelItineraryFlow(input);
+  // Mock response for development
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        optimizedItinerary: `# Optimized Travel Itinerary\n\n**Original Itinerary:**\n${input.originalItinerary}\n\n**Optimization Criteria:** ${input.optimizationCriteria}\n\n## Optimized Plan:\n\n### Day 1: Enhanced Arrival\n- Streamlined check-in process\n- Optimized local exploration route\n- Budget-friendly dining options\n\n### Day 2: Improved Attractions\n- Time-optimized attraction visits\n- Enhanced cultural experiences\n- Better shopping recommendations\n\n### Day 3: Efficient Departure\n- Optimized final day schedule\n- Strategic souvenir shopping\n- Smooth departure process\n\n*This is a mock optimized itinerary for development purposes.*`
+      });
+    }, 1000);
+  });
 }
 
 const prompt = ai.definePrompt({

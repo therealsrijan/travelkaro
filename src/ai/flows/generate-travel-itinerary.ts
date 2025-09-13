@@ -8,7 +8,7 @@
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import {z} from 'zod';
 
 const GenerateTravelItineraryInputSchema = z.object({
   destination: z.string().describe('The destination for the travel itinerary.'),
@@ -23,7 +23,14 @@ const GenerateTravelItineraryOutputSchema = z.object({
 export type GenerateTravelItineraryOutput = z.infer<typeof GenerateTravelItineraryOutputSchema>;
 
 export async function generateTravelItinerary(input: GenerateTravelItineraryInput): Promise<GenerateTravelItineraryOutput> {
-  return generateTravelItineraryFlow(input);
+  // Mock response for development
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        itinerary: `# Travel Itinerary for ${input.destination}\n\n**Travel Dates:** ${input.travelDates}\n**Preferences:** ${input.preferences}\n\n## Day 1: Arrival\n- Check into accommodation\n- Explore local area\n- Dinner at recommended restaurant\n\n## Day 2: Main Attractions\n- Visit top tourist spots\n- Local cultural experience\n- Shopping in local markets\n\n## Day 3: Departure\n- Final sightseeing\n- Souvenir shopping\n- Departure\n\n*This is a mock itinerary generated for development purposes.*`
+      });
+    }, 1000);
+  });
 }
 
 const prompt = ai.definePrompt({

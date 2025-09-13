@@ -7,8 +7,7 @@ import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { auth, mockSignIn } from '@/lib/firebase';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -36,10 +35,15 @@ export default function LoginPage() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      await signInWithEmailAndPassword(auth, values.email, values.password);
+      // Mock login for development
+      console.log('Mock login with:', values.email);
+      
+      // Simulate the sign-in process
+      mockSignIn(values.email);
+      
       toast({
         title: 'Success!',
-        description: "You've been logged in.",
+        description: "You've been logged in (mock mode).",
       });
       
       // Check for a pending invitation after successful login

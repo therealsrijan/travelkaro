@@ -94,72 +94,77 @@ export function ItineraryChatbot({ tripContext }: ItineraryChatbotProps) {
   }
 
   return (
-    <Card className="h-[70vh] flex flex-col">
-        <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-                <Bot /> AI Itinerary Planner
-            </CardTitle>
-            <CardDescription>
-                Ask me anything about your trip to {tripContext.destination}!
-            </CardDescription>
-        </CardHeader>
-      <CardContent className="flex-grow flex flex-col gap-4 overflow-hidden">
-        <ScrollArea className="flex-grow pr-4" ref={scrollAreaRef}>
-            <div className="space-y-4">
-                {messages.map((message, index) => (
-                    <div
-                        key={index}
-                        className={cn(
-                            'flex items-start gap-3',
-                            message.sender === 'user' ? 'justify-end' : 'justify-start'
+    <div className="h-full flex flex-col relative">
+        <Card className="flex-1 flex flex-col mb-0">
+            <CardHeader className="flex-shrink-0">
+                <CardTitle className="flex items-center gap-2">
+                    <Bot /> AI Itinerary Planner
+                </CardTitle>
+                <CardDescription>
+                    Ask me anything about your trip to {tripContext.destination}!
+                </CardDescription>
+            </CardHeader>
+            <CardContent className="flex-1 flex flex-col gap-4 overflow-hidden pb-20">
+                <ScrollArea className="flex-1 pr-4" ref={scrollAreaRef}>
+                    <div className="space-y-4">
+                        {messages.map((message, index) => (
+                            <div
+                                key={index}
+                                className={cn(
+                                    'flex items-start gap-3',
+                                    message.sender === 'user' ? 'justify-end' : 'justify-start'
+                                )}
+                            >
+                                 {message.sender === 'bot' && (
+                                     <Avatar className="h-8 w-8">
+                                        <AvatarFallback className="bg-primary text-primary-foreground"><Bot className="h-5 w-5"/></AvatarFallback>
+                                    </Avatar>
+                                 )}
+                                <div
+                                    className={cn(
+                                        'max-w-sm rounded-lg p-3 text-sm',
+                                        message.sender === 'user'
+                                        ? 'bg-primary text-primary-foreground'
+                                        : 'bg-muted'
+                                    )}
+                                >
+                                    <pre className="whitespace-pre-wrap font-sans">{message.text}</pre>
+                                </div>
+                                 {message.sender === 'user' && (
+                                    <Avatar className="h-8 w-8">
+                                        <AvatarFallback><User className="h-5 w-5"/></AvatarFallback>
+                                    </Avatar>
+                                 )}
+                            </div>
+                        ))}
+                        {isLoading && (
+                            <div className="flex items-start gap-3 justify-start">
+                                <Avatar className="h-8 w-8">
+                                    <AvatarFallback className="bg-primary text-primary-foreground"><Bot className="h-5 w-5"/></AvatarFallback>
+                                </Avatar>
+                                <div className="bg-muted rounded-lg p-3 text-sm">
+                                    <CircleDashed className="animate-spin h-5 w-5 text-muted-foreground" />
+                                </div>
+                            </div>
                         )}
-                    >
-                         {message.sender === 'bot' && (
-                             <Avatar className="h-8 w-8">
-                                <AvatarFallback className="bg-primary text-primary-foreground"><Bot className="h-5 w-5"/></AvatarFallback>
-                            </Avatar>
-                         )}
-                        <div
-                            className={cn(
-                                'max-w-sm rounded-lg p-3 text-sm',
-                                message.sender === 'user'
-                                ? 'bg-primary text-primary-foreground'
-                                : 'bg-muted'
-                            )}
-                        >
-                            <pre className="whitespace-pre-wrap font-sans">{message.text}</pre>
-                        </div>
-                         {message.sender === 'user' && (
-                            <Avatar className="h-8 w-8">
-                                <AvatarFallback><User className="h-5 w-5"/></AvatarFallback>
-                            </Avatar>
-                         )}
                     </div>
-                ))}
-                {isLoading && (
-                    <div className="flex items-start gap-3 justify-start">
-                        <Avatar className="h-8 w-8">
-                            <AvatarFallback className="bg-primary text-primary-foreground"><Bot className="h-5 w-5"/></AvatarFallback>
-                        </Avatar>
-                        <div className="bg-muted rounded-lg p-3 text-sm">
-                            <CircleDashed className="animate-spin h-5 w-5 text-muted-foreground" />
-                        </div>
-                    </div>
-                )}
-            </div>
-        </ScrollArea>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="flex items-center gap-2 border-t pt-4">
-          <Input
-            {...form.register('query')}
-            placeholder="e.g., What are some good restaurants near the Eiffel Tower?"
-            disabled={isLoading}
-            autoComplete="off"
-          />
-          <Button type="submit" disabled={isLoading} size="icon" className="shrink-0">
-            <CornerDownLeft />
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+                </ScrollArea>
+            </CardContent>
+        </Card>
+        <div className="sticky bottom-0 p-4 bg-background border-t shadow-lg z-10">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="flex items-center gap-2">
+                <Input
+                    {...form.register('query')}
+                    placeholder="e.g., What are some good restaurants near the Eiffel Tower?"
+                    disabled={isLoading}
+                    autoComplete="off"
+                    className="flex-1"
+                />
+                <Button type="submit" disabled={isLoading} size="icon" className="shrink-0">
+                    <CornerDownLeft />
+                </Button>
+            </form>
+        </div>
+    </div>
   );
 }

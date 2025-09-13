@@ -52,6 +52,7 @@ interface TripsContextType {
   updateMember: (tripId: string, updatedMember: Member) => void;
   removeMember: (tripId: string, memberId: string) => void;
   addPicturesToTrip: (tripId: string, pictures: TripPicture[]) => void;
+  removePicture: (tripId: string, pictureId: string) => void;
 }
 
 const TripsContext = createContext<TripsContextType | undefined>(undefined);
@@ -226,9 +227,26 @@ export const TripsProvider = ({ children }: { children: ReactNode }) => {
     );
   };
 
+  const removePicture = (tripId: string, pictureId: string) => {
+    setTrips(prevTrips =>
+      prevTrips.map(trip => {
+        if (trip.id === tripId) {
+          const pictureToRemove = trip.pictures?.find(p => p.id === pictureId);
+          const updatedPictures = trip.pictures?.filter(p => p.id !== pictureId) || [];
+          toast({ 
+            title: 'Picture Removed', 
+            description: `${pictureToRemove?.name || 'Picture'} has been removed from the trip.` 
+          });
+          return { ...trip, pictures: updatedPictures };
+        }
+        return trip;
+      })
+    );
+  };
+
 
   return (
-    <TripsContext.Provider value={{ trips, addTrip, updateTrip, updateTripNotes, addMember, updateMember, removeMember, addMemberByEmail, addPicturesToTrip }}>
+    <TripsContext.Provider value={{ trips, addTrip, updateTrip, updateTripNotes, addMember, updateMember, removeMember, addMemberByEmail, addPicturesToTrip, removePicture }}>
       {children}
     </TripsContext.Provider>
   );

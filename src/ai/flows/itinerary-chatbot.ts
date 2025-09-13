@@ -9,7 +9,7 @@
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import {z} from 'zod';
 
 const ItineraryChatbotInputSchema = z.object({
   query: z.string().describe('The user query for planning the travel itinerary.'),
@@ -23,7 +23,14 @@ const ItineraryChatbotOutputSchema = z.object({
 export type ItineraryChatbotOutput = z.infer<typeof ItineraryChatbotOutputSchema>;
 
 export async function itineraryChatbot(input: ItineraryChatbotInput): Promise<ItineraryChatbotOutput> {
-  return itineraryChatbotFlow(input);
+  // Mock response for development
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        response: `I understand you're asking about: "${input.query}"\n\nBased on your trip context:\n${input.tripContext}\n\nHere's my recommendation:\n\nThis is a mock response for development purposes. In a real implementation, this would use AI to provide personalized travel advice based on your specific trip details and query.`
+      });
+    }, 1000);
+  });
 }
 
 const prompt = ai.definePrompt({

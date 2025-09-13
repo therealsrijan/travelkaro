@@ -97,3 +97,82 @@
     background-size: 100px 100px;
   }
 }
+
+/* Calendar specific styles */
+@layer components {
+  .rdp {
+    --rdp-cell-size: 36px;
+    --rdp-accent-color: hsl(var(--primary));
+    --rdp-background-color: hsl(var(--background));
+    --rdp-accent-color-dark: hsl(var(--primary));
+    --rdp-background-color-dark: hsl(var(--background));
+    --rdp-outline: 2px solid var(--rdp-accent-color);
+    --rdp-outline-selected: 2px solid var(--rdp-accent-color);
+    margin: 0;
+  }
+
+  .rdp-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .rdp-head_row {
+    display: flex;
+  }
+
+  .rdp-head_cell {
+    width: var(--rdp-cell-size);
+    height: var(--rdp-cell-size);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .rdp-row {
+    display: flex;
+    width: 100%;
+  }
+
+  .rdp-cell {
+    width: var(--rdp-cell-size);
+    height: var(--rdp-cell-size);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .rdp-day {
+    width: var(--rdp-cell-size);
+    height: var(--rdp-cell-size);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 400;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .rdp-day:hover {
+    background-color: hsl(var(--accent));
+  }
+
+  .rdp-day_selected {
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+  }
+
+  .rdp-day_today {
+    background-color: hsl(var(--accent));
+    color: hsl(var(--accent-foreground));
+  }
+
+  .rdp-day_outside {
+    color: hsl(var(--muted-foreground));
+  }
+}

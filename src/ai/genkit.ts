@@ -1,7 +1,15 @@
-import {genkit} from 'genkit';
-import {googleAI} from '@genkit-ai/googleai';
-
-export const ai = genkit({
-  plugins: [googleAI()],
-  model: 'googleai/gemini-2.0-flash',
-});
+// Mock AI configuration for development
+export const ai = {
+  definePrompt: ({ name, input, output, prompt }: any) => ({
+    name,
+    input,
+    output,
+    prompt,
+  }),
+  defineFlow: ({ name, inputSchema, outputSchema }: any, handler: any) => ({
+    name,
+    inputSchema,
+    outputSchema,
+    handler,
+  }),
+};

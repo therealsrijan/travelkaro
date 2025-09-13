@@ -1,8 +1,7 @@
 'use client';
 
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
-import { onAuthStateChanged, User } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { auth, User } from '@/lib/firebase';
 import { Skeleton } from '@/components/ui/skeleton';
 
 interface AuthContextType {
@@ -20,12 +19,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      setLoading(false);
-    });
+    if (auth && auth.onAuthStateChanged) {
+      const unsubscribe = auth.onAuthStateChanged((user: User | null) => {
+        setUser(user);
+        setLoading(false);
+      });
 
-    return () => unsubscribe();
+      return () => unsubscribe();
+    } else {
+      // Mock auth for development
+      setUser(null);
+      setLoading(false);
+    }
   }, []);
 
   if (loading) {

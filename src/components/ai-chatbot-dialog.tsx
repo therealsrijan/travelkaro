@@ -17,9 +17,13 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Bot, Sparkles } from 'lucide-react';
+import { Bot, Sparkles, CalendarIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { format } from 'date-fns';
 
 const formSchema = z.object({
   destination: z.string().min(2, { message: 'Destination is required.' }),
@@ -74,7 +78,7 @@ export function AiChatbotDialog({ open, onOpenChange }: AiChatbotDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Bot />
@@ -87,7 +91,7 @@ export function AiChatbotDialog({ open, onOpenChange }: AiChatbotDialogProps) {
         
         {!itinerary && !isLoading && (
             <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 py-4">
                 <FormField
                 control={form.control}
                 name="destination"
@@ -107,9 +111,38 @@ export function AiChatbotDialog({ open, onOpenChange }: AiChatbotDialogProps) {
                 render={({ field }) => (
                     <FormItem>
                     <FormLabel>Travel Dates</FormLabel>
-                    <FormControl>
-                        <Input placeholder="e.g., July 15-22, 2024" {...field} />
-                    </FormControl>
+                    <div className="relative">
+                        <FormControl>
+                            <Input 
+                                placeholder="e.g., July 15-22, 2024" 
+                                {...field} 
+                                className="pr-10"
+                            />
+                        </FormControl>
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                                >
+                                    <CalendarIcon className="h-4 w-4 text-muted-foreground" />
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="end">
+                                <Calendar
+                                    mode="single"
+                                    onSelect={(date) => {
+                                        if (date) {
+                                            field.onChange(format(date, 'PPP'));
+                                        }
+                                    }}
+                                    initialFocus
+                                />
+                            </PopoverContent>
+                        </Popover>
+                    </div>
                     <FormMessage />
                     </FormItem>
                 )}
@@ -127,8 +160,8 @@ export function AiChatbotDialog({ open, onOpenChange }: AiChatbotDialogProps) {
                     </FormItem>
                 )}
                 />
-                 <DialogFooter>
-                    <Button type="submit" disabled={isLoading} className="w-full sm:w-auto">
+                 <DialogFooter className="pt-4">
+                    <Button type="submit" disabled={isLoading} className="w-full">
                         <Sparkles className="mr-2 h-4 w-4" />
                         Generate Itinerary
                     </Button>
